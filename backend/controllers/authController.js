@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 import User from '../models/User.js';
 
 const generateToken = (id) =>
@@ -58,10 +59,15 @@ export const register = async (req, res, next) => {
       });
     }
 
+    // Hash password here, before User.create(), so no Mongoose pre-save
+    // hook is needed. bcrypt.hashSync is synchronous — no Promises,
+    // no Kareem middleware involved.
+    const hashedPassword = bcrypt.hashSync(password, 12);
+
     const user = await User.create({
       name: name.trim(),
       email: email.toLowerCase().trim(),
-      password,
+      password: hashedPassword,
     });
 
     const token = generateToken(user._id);

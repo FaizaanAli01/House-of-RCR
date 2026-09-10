@@ -121,8 +121,9 @@ export const getMe = async (req, res) => {
   res.status(200).json({ success: true, user: safeUser(req.user) });
 };
 
-// @desc    Logout (client removes the token; server acknowledges)
+// @desc    Logout (JWT is stateless; client removes the token)
 // @route   POST /api/auth/logout
 // @access  Private
 export const logout = async (req, res) => {
-  res.status
+  res.status(200).json({ success: true, message: 'Logged out successfully.' });
+};

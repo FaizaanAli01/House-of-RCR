@@ -6,6 +6,10 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { connectDB } from './config/db.js';
 import productRoutes from './routes/productRoutes.js';
+import authRoutes from './routes/authRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+import cartRoutes from './routes/cartRoutes.js';
+import orderRoutes from './routes/orderRoutes.js';
 import Product from './models/Product.js';
 import { productsData } from './data/productsData.js';
 import { requestLogger } from './middleware/logger.js';
@@ -70,24 +74,31 @@ app.get('/api/health', (req, res) => {
     status: 'Healthy',
     timestamp: new Date().toISOString(),
     service: 'House of RCR Backend API',
-    phase: 'Phase 2 - Node.js + Express + MongoDB',
+    phase: 'Phase 3 - Auth + Cart + Orders',
   });
 });
 
-// 5. Product REST API Routes
+// 5. API Routes
 app.use('/api/products', productRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/cart', cartRoutes);
+app.use('/api/orders', orderRoutes);
 
 // 6. Error Handling Middlewares
 app.use(notFound);
 app.use(errorHandler);
 
-// 7. Start Server Listener
+// 7. Start Server
 app.listen(PORT, () => {
   console.log('====================================================');
   console.log(`🚀 House of RCR Server running on http://localhost:${PORT}`);
   console.log(`📦 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🛍️  API Endpoints: http://localhost:${PORT}/api/products`);
-  console.log(`🩺 Health Check: http://localhost:${PORT}/api/health`);
+  console.log(`🛍️  Products:    http://localhost:${PORT}/api/products`);
+  console.log(`🔐 Auth:        http://localhost:${PORT}/api/auth`);
+  console.log(`🛒 Cart:        http://localhost:${PORT}/api/cart`);
+  console.log(`📦 Orders:      http://localhost:${PORT}/api/orders`);
+  console.log(`🩺 Health:      http://localhost:${PORT}/api/health`);
   console.log('====================================================');
 });
 

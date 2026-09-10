@@ -19,6 +19,7 @@ const safeUser = (user) => ({
 // @access  Public
 export const register = async (req, res, next) => {
   try {
+    console.log('[register] Step 1: validating input');
     const { name, email, password, confirmPassword } = req.body;
 
     if (!name || !email || !password || !confirmPassword) {
@@ -51,6 +52,7 @@ export const register = async (req, res, next) => {
         .json({ success: false, message: 'Passwords do not match.' });
     }
 
+    console.log('[register] Step 2: checking for existing user');
     const existing = await User.findOne({ email: email.toLowerCase().trim() });
     if (existing) {
       return res.status(400).json({
@@ -59,19 +61,22 @@ export const register = async (req, res, next) => {
       });
     }
 
-    // Hash password here, before User.create(), so no Mongoose pre-save
-    // hook is needed. bcrypt.hashSync is synchronous — no Promises,
-    // no Kareem middleware involved.
+    console.log('[register] Step 3: hashing password with bcrypt.hashSync');
     const hashedPassword = bcrypt.hashSync(password, 12);
+    console.log('[register] Step 3 complete: hash length =', hashedPassword.length);
 
+    console.log('[register] Step 4: calling User.create()');
     const user = await User.create({
       name: name.trim(),
       email: email.toLowerCase().trim(),
       password: hashedPassword,
     });
+    console.log('[register] Step 4 complete: user._id =', user._id);
 
+    console.log('[register] Step 5: generating JWT');
     const token = generateToken(user._id);
 
+    console.log('[register] SUCCESS');
     res.status(201).json({
       success: true,
       message: 'Account created successfully. Welcome to House of RCR!',
@@ -79,6 +84,9 @@ export const register = async (req, res, next) => {
       user: safeUser(user),
     });
   } catch (error) {
+    console.error('[register] CAUGHT ERROR:', error.message);
+    console.error('[register] ERROR TYPE:', error.constructor.name);
+    console.error('[register] FULL STACK:\n', error.stack);
     next(error);
   }
 };
@@ -116,6 +124,8 @@ export const login = async (req, res, next) => {
       user: safeUser(user),
     });
   } catch (error) {
+    console.error('[login] CAUGHT ERROR:', error.message);
+    console.error('[login] FULL STACK:\n', error.stack);
     next(error);
   }
 };

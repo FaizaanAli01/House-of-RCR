@@ -1,0 +1,13 @@
+{
+  "name": "house-of-rcr-backend",
+  "version": "1.0.0",
+  "description": "House of RCR Backend — Express + MongoDB REST API",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

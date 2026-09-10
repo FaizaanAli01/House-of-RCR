@@ -47,19 +47,21 @@ const userSchema = new mongoose.Schema(
 );
 
 // Hash password before saving.
-// Uses traditional callback pattern (not async) so it works correctly
-// with all Mongoose versions (5 through 9) without `next`-type confusion.
+//
+// WHY hashSync: Mongoose 9 + Kareem 3 does NOT pass `next` to async hook
+// functions. Any hook declared `async function(next)` will have
+// `next === undefined` at runtime, throwing "next is not a function".
+// Using hashSync makes this hook fully synchronous — no Promises, no
+// callbacks, no Kareem async-detection ambiguity whatsoever.
+// The ~200 ms blocking cost is acceptable for a low-frequency endpoint.
 userSchema.pre('save', function (next) {
-  // Skip hashing if password was not modified
   if (!this.isModified('password')) return next();
-
-  bcrypt
-    .hash(this.password, 12)
-    .then((hash) => {
-      this.password = hash;
-      next();
-    })
-    .catch((err) => next(err));
+  try {
+    this.password = bcrypt.hashSync(this.password, 12);
+    next();
+  } catch (err) {
+    next(err);
+  }
 });
 
 // Compare candidate password with stored hash

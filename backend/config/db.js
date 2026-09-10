@@ -13,14 +13,37 @@ const maskMongoUri = (uri) => {
   }
 };
 
+// Spin up MongoMemoryServer as a fallback for development environments
+// that have no reachable MongoDB instance.
+const startInMemoryDB = async () => {
+  try {
+    console.log('[MongoDB] Initializing in-memory MongoDB server for development...');
+    const { MongoMemoryServer } = await import('mongodb-memory-server');
+    mongoMemoryServer = await MongoMemoryServer.create({
+      instance: { dbName: 'house_of_rcr' },
+    });
+    const memoryUri = mongoMemoryServer.getUri();
+    const memConn = await mongoose.connect(memoryUri);
+    console.log(`[MongoDB] Connected to in-memory database: ${memConn.connection.host} (${memConn.connection.name})`);
+    return memConn;
+  } catch (err) {
+    console.error(`[MongoDB] Fatal: Could not establish any MongoDB connection: ${err.message}`);
+    process.exit(1);
+  }
+};
+
 export const connectDB = async () => {
   const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/house_of_rcr';
 
-  // Detect placeholder / missing URI
-  if (!uri || uri === 'your-atlas-connection-string' || (!uri.startsWith('mongodb://') && !uri.startsWith('mongodb+srv://'))) {
+  // Detect placeholder / missing URI — fall straight to in-memory
+  if (
+    !uri ||
+    uri === 'your-atlas-connection-string' ||
+    (!uri.startsWith('mongodb://') && !uri.startsWith('mongodb+srv://'))
+  ) {
     console.warn('[MongoDB] MONGODB_URI is not set or is a placeholder. Falling back to in-memory database.');
     console.warn('[MongoDB] To use Atlas, update MONGODB_URI in your .env file with a valid mongodb+srv:// connection string.');
-    return fallbackToMemory();
+    return startInMemoryDB();
   }
 
   console.log(`[MongoDB] Connecting to: ${maskMongoUri(uri)}`);
@@ -34,29 +57,9 @@ export const connectDB = async () => {
     console.log(`[MongoDB] ✅ Connected to Atlas: ${conn.connection.host} (db: ${conn.connection.name})`);
     return conn;
   } catch (error) {
-    console.warn(`[MongoDB] Could not connect to primary URI (${uri}): ${error.message}`);
-    
-    // In development or local environments without a standalone MongoDB daemon running,
-    // spin up an in-memory MongoDB server so the project is 100% runnable out of the box.
-    try {
-      console.log('[MongoDB] Initializing in-memory MongoDB server for development...');
-      const { MongoMemoryServer } = await import('mongodb-memory-server');
-      mongoMemoryServer = await MongoMemoryServer.create({
-        instance: {
-          dbName: 'house_of_rcr'
-        }
-      });
-      const memoryUri = mongoMemoryServer.getUri();
-      const memConn = await mongoose.connect(memoryUri);
-      console.log(`[MongoDB] Connected to in-memory database: ${memConn.connection.host} (${memConn.connection.name})`);
-      return memConn;
-    } catch (fallbackError) {
-      console.error(`[MongoDB] Fatal: Could not establish MongoDB connection: ${fallbackError.message}`);
-      process.exit(1);
-    }
-
-    console.warn('[MongoDB] Falling back to in-memory database for now...');
-    return fallbackToMemory();
+    console.warn(`[MongoDB] Could not connect to primary URI (${maskMongoUri(uri)}): ${error.message}`);
+    console.log('[MongoDB] Falling back to in-memory MongoDB for development...');
+    return startInMemoryDB();
   }
 };
 

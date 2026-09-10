@@ -1,258 +1,372 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { ShoppingBag, Search, Menu, X, Sparkles, ChevronRight, ShieldCheck } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
+import {
+  ShoppingBag,
+  Search,
+  X,
+  Menu,
+  ChevronDown,
+  User,
+  LogOut,
+  Package,
+  Loader2,
+} from 'lucide-react';
 import { useCart } from '../../context/CartContext';
-import { categories } from '../../data/categories';
+import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
+
+const CATEGORIES = [
+  { label: 'Men', value: 'men' },
+  { label: 'Women', value: 'women' },
+  { label: 'T-Shirts', value: 'tshirts' },
+  { label: 'Shirts', value: 'shirts' },
+  { label: 'Jeans', value: 'jeans' },
+  { label: 'Trousers', value: 'trousers' },
+  { label: 'Hoodies', value: 'hoodies' },
+  { label: 'Jackets', value: 'jackets' },
+  { label: 'Dresses', value: 'dresses' },
+  { label: 'Ethnic Wear', value: 'ethnic' },
+  { label: 'Accessories', value: 'accessories' },
+];
 
 const Navbar = () => {
   const { totalItemsCount } = useCart();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const { user, isAuthenticated, authLoading, logout } = useAuth();
+  const { addToast } = useToast();
   const navigate = useNavigate();
-  const location = useLocation();
 
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showSearch, setShowSearch] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [showCatDropdown, setShowCatDropdown] = useState(false);
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [logoutLoading, setLogoutLoading] = useState(false);
+
+  const catRef = useRef(null);
+  const userRef = useRef(null);
+  const searchRef = useRef(null);
+
+  // Close dropdowns on outside click
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+    const handler = (e) => {
+      if (catRef.current && !catRef.current.contains(e.target))
+        setShowCatDropdown(false);
+      if (userRef.current && !userRef.current.contains(e.target))
+        setShowUserDropdown(false);
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  // Synchronize mobile menu state on navigation
-  const [prevPath, setPrevPath] = useState(location.pathname);
-  if (location.pathname !== prevPath) {
-    setPrevPath(location.pathname);
-    setMobileMenuOpen(false);
-  }
-
-  const handleSearchSubmit = (e) => {
+  const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
       setSearchQuery('');
-      setMobileMenuOpen(false);
+      setShowSearch(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    setLogoutLoading(true);
+    setShowUserDropdown(false);
+    try {
+      await logout();
+      addToast('Logged out successfully.', 'info');
+      navigate('/');
+    } finally {
+      setLogoutLoading(false);
     }
   };
 
   return (
-    <>
-      {/* Top Announcement Bar */}
-      <div className="bg-brand-dark text-slate-200 text-xs py-2 px-4 text-center font-medium tracking-wide border-b border-slate-800">
-        <div className="max-w-7xl mx-auto flex items-center justify-center gap-2 flex-wrap">
-          <Sparkles className="w-3.5 h-3.5 text-amber-400 inline" />
-          <span>Free Delivery on orders above ₹999 across India</span>
-          <span className="hidden sm:inline text-slate-500">•</span>
-          <span className="hidden sm:inline text-amber-300">Use coupon <strong className="tracking-wider text-white">RCR10</strong> for extra 10% off</span>
-        </div>
-      </div>
+    <header className="sticky top-0 z-50 bg-brand-cream/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="flex items-center justify-between h-16 gap-4">
+          {/* Logo */}
+          <Link
+            to="/"
+            className="flex items-center gap-2 flex-shrink-0"
+            onClick={() => setMobileOpen(false)}
+          >
+            <span className="w-8 h-8 rounded-xl bg-brand-dark text-amber-400 font-serif font-bold text-base flex items-center justify-center shadow">
+              R
+            </span>
+            <span className="font-serif text-base sm:text-lg font-bold tracking-wider text-brand-dark uppercase hidden xs:block">
+              House of RCR
+            </span>
+          </Link>
 
-      {/* Main Sticky Header */}
-      <header
-        className={`sticky top-0 z-40 bg-white/95 backdrop-blur-md transition-all duration-300 border-b ${
-          isScrolled ? 'border-slate-200 shadow-md py-3' : 'border-slate-100 py-4'
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between gap-4">
-            
-            {/* Mobile Menu Trigger */}
-            <button
-              onClick={() => setMobileMenuOpen(true)}
-              className="lg:hidden p-2 text-slate-700 hover:text-amber-700 hover:bg-slate-50 rounded-lg transition-colors"
-              aria-label="Open menu"
+          {/* Desktop Nav */}
+          <nav className="hidden md:flex items-center gap-6 text-xs font-bold uppercase tracking-wider text-slate-600">
+            <NavLink
+              to="/"
+              end
+              className={({ isActive }) =>
+                isActive ? 'text-amber-700' : 'hover:text-slate-900 transition-colors'
+              }
             >
-              <Menu className="w-6 h-6" />
-            </button>
-
-            {/* Brand Logo */}
-            <Link to="/" className="flex flex-col items-center sm:items-start group">
-              <div className="flex items-center gap-2">
-                <span className="w-7 h-7 rounded-lg bg-brand-dark text-amber-400 font-serif font-bold text-base flex items-center justify-center shadow-sm">
-                  R
-                </span>
-                <span className="font-serif text-xl sm:text-2xl font-bold tracking-wider text-brand-dark uppercase">
-                  House of RCR
-                </span>
-              </div>
-              <span className="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-semibold hidden sm:block">
-                Premium Indian Fashion
-              </span>
-            </Link>
-
-            {/* Desktop Search Bar */}
-            <form
-              onSubmit={handleSearchSubmit}
-              className="hidden md:flex flex-1 max-w-md mx-6 relative items-center"
+              Home
+            </NavLink>
+            <NavLink
+              to="/shop"
+              className={({ isActive }) =>
+                isActive ? 'text-amber-700' : 'hover:text-slate-900 transition-colors'
+              }
             >
-              <input
-                type="text"
-                placeholder="Search t-shirts, shirts, jeans, hoodies, ethnic wear..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-full pl-10 pr-10 py-2.5 focus:outline-none focus:border-amber-500 focus:bg-white transition-all shadow-inner placeholder:text-slate-400"
-              />
-              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
-              {searchQuery && (
+              Shop
+            </NavLink>
+
+            {/* Categories Dropdown */}
+            <div ref={catRef} className="relative">
+              <button
+                onClick={() => setShowCatDropdown(!showCatDropdown)}
+                className="flex items-center gap-1 hover:text-slate-900 transition-colors"
+              >
+                Categories <ChevronDown className="w-3 h-3" />
+              </button>
+              {showCatDropdown && (
+                <div className="absolute top-full left-0 mt-2 w-44 bg-white rounded-2xl border border-slate-200 shadow-lg py-2 z-50">
+                  {CATEGORIES.map((cat) => (
+                    <Link
+                      key={cat.value}
+                      to={`/shop?category=${cat.value}`}
+                      onClick={() => setShowCatDropdown(false)}
+                      className="block px-4 py-2 text-xs font-semibold text-slate-600 hover:text-amber-700 hover:bg-amber-50 transition-colors"
+                    >
+                      {cat.label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          </nav>
+
+          {/* Right Actions */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Search */}
+            {showSearch ? (
+              <form
+                onSubmit={handleSearch}
+                className="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-3 py-1.5 shadow-sm"
+                ref={searchRef}
+              >
+                <input
+                  type="text"
+                  autoFocus
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search clothing..."
+                  className="text-sm outline-none bg-transparent w-36 sm:w-48 text-slate-900 placeholder:text-slate-400"
+                />
+                <button type="submit" className="text-slate-500 hover:text-amber-700 transition-colors">
+                  <Search className="w-4 h-4" />
+                </button>
                 <button
                   type="button"
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-3 text-slate-400 hover:text-slate-600 p-1"
+                  onClick={() => setShowSearch(false)}
+                  className="text-slate-400 hover:text-slate-700 transition-colors"
                 >
-                  <X className="w-3.5 h-3.5" />
+                  <X className="w-4 h-4" />
                 </button>
-              )}
-            </form>
-
-            {/* Right Action Icons */}
-            <div className="flex items-center gap-3 sm:gap-4">
-              <Link
-                to="/shop"
-                className="hidden lg:flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-slate-700 hover:text-amber-800 py-2 px-3 rounded-lg hover:bg-slate-50 transition-colors"
+              </form>
+            ) : (
+              <button
+                onClick={() => setShowSearch(true)}
+                className="p-2 rounded-xl text-slate-600 hover:text-amber-700 hover:bg-amber-50 transition-all"
+                aria-label="Search"
               >
-                Shop All
-              </Link>
+                <Search className="w-5 h-5" />
+              </button>
+            )}
 
-              {/* Shopping Cart Button */}
-              <Link
-                to="/cart"
-                className="relative flex items-center gap-2 p-2.5 rounded-full bg-slate-50 hover:bg-amber-50 text-brand-dark hover:text-amber-800 transition-colors border border-slate-100 group shadow-sm"
-                aria-label="Shopping Cart"
-              >
-                <ShoppingBag className="w-5 h-5 text-slate-700 group-hover:text-amber-800 transition-colors" />
-                {totalItemsCount > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 bg-amber-500 text-white font-bold text-[11px] w-5 h-5 rounded-full flex items-center justify-center shadow-md">
-                    {totalItemsCount}
-                  </span>
-                )}
-                <span className="text-xs font-semibold hidden md:inline mr-1 text-slate-700 group-hover:text-amber-800">
-                  Cart
-                </span>
-              </Link>
-            </div>
-          </div>
-
-          {/* Desktop Categories Sub-Nav */}
-          <nav className="hidden lg:flex items-center justify-center gap-7 pt-3 border-t border-slate-100 mt-3">
+            {/* Cart */}
             <Link
-              to="/shop"
-              className="text-xs font-semibold tracking-wider uppercase text-slate-600 hover:text-amber-700 transition-colors py-1"
+              to="/cart"
+              className="relative p-2 rounded-xl text-slate-600 hover:text-amber-700 hover:bg-amber-50 transition-all"
+              aria-label="Cart"
             >
-              All Clothing
+              <ShoppingBag className="w-5 h-5" />
+              {totalItemsCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-amber-500 text-white text-[10px] font-bold w-4.5 h-4.5 min-w-[1.1rem] min-h-[1.1rem] rounded-full flex items-center justify-center leading-none px-0.5">
+                  {totalItemsCount > 99 ? '99+' : totalItemsCount}
+                </span>
+              )}
             </Link>
-            {categories.slice(0, 7).map((cat) => (
-              <Link
-                key={cat.id}
-                to={`/shop?category=${cat.slug}`}
-                className="text-xs font-medium tracking-wider uppercase text-slate-600 hover:text-amber-700 transition-colors py-1"
-              >
-                {cat.name.split('&')[0].trim()}
-              </Link>
-            ))}
-          </nav>
-        </div>
-      </header>
 
-      {/* Mobile Search Bar */}
-      <div className="md:hidden bg-white px-4 py-2.5 border-b border-slate-100 shadow-sm">
-        <form onSubmit={handleSearchSubmit} className="relative flex items-center">
-          <input
-            type="text"
-            placeholder="Search t-shirts, shirts, jeans..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl pl-10 pr-10 py-2 focus:outline-none focus:border-amber-500"
-          />
-          <Search className="w-4 h-4 text-slate-400 absolute left-3 pointer-events-none" />
-          {searchQuery && (
+            {/* User Account */}
+            {authLoading ? (
+              <div className="p-2">
+                <Loader2 className="w-5 h-5 animate-spin text-slate-400" />
+              </div>
+            ) : isAuthenticated ? (
+              <div ref={userRef} className="relative">
+                <button
+                  onClick={() => setShowUserDropdown(!showUserDropdown)}
+                  className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-amber-50 transition-all group"
+                  aria-label="Account menu"
+                >
+                  <div className="w-7 h-7 rounded-full bg-amber-100 border-2 border-amber-300 flex items-center justify-center">
+                    <span className="text-amber-800 font-bold text-xs">
+                      {user.name.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                  <span className="hidden sm:block text-xs font-bold text-slate-700 group-hover:text-amber-800 max-w-[80px] truncate">
+                    {user.name.split(' ')[0]}
+                  </span>
+                  <ChevronDown className="w-3 h-3 text-slate-400 hidden sm:block" />
+                </button>
+
+                {showUserDropdown && (
+                  <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-2xl border border-slate-200 shadow-lg py-2 z-50">
+                    <div className="px-4 py-2 border-b border-slate-100 mb-1">
+                      <p className="text-xs font-bold text-slate-900 truncate">
+                        {user.name}
+                      </p>
+                      <p className="text-[10px] text-slate-400 truncate">
+                        {user.email}
+                      </p>
+                    </div>
+                    <Link
+                      to="/account"
+                      onClick={() => setShowUserDropdown(false)}
+                      className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-semibold text-slate-600 hover:text-amber-700 hover:bg-amber-50 transition-colors"
+                    >
+                      <User className="w-3.5 h-3.5" /> My Profile
+                    </Link>
+                    <Link
+                      to="/account"
+                      state={{ tab: 'orders' }}
+                      onClick={() => setShowUserDropdown(false)}
+                      className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-semibold text-slate-600 hover:text-amber-700 hover:bg-amber-50 transition-colors"
+                    >
+                      <Package className="w-3.5 h-3.5" /> My Orders
+                    </Link>
+                    <div className="border-t border-slate-100 mt-1 pt-1">
+                      <button
+                        onClick={handleLogout}
+                        disabled={logoutLoading}
+                        className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-semibold text-rose-600 hover:bg-rose-50 transition-colors disabled:opacity-60"
+                      >
+                        {logoutLoading ? (
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        ) : (
+                          <LogOut className="w-3.5 h-3.5" />
+                        )}
+                        Logout
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="hidden sm:flex items-center gap-2">
+                <Link
+                  to="/login"
+                  className="text-xs font-bold text-slate-600 hover:text-amber-800 px-3 py-2 rounded-xl hover:bg-amber-50 transition-all uppercase tracking-wide"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  to="/register"
+                  className="text-xs font-bold text-white bg-brand-dark hover:bg-black px-4 py-2 rounded-xl transition-all uppercase tracking-wide shadow-sm"
+                >
+                  Register
+                </Link>
+              </div>
+            )}
+
+            {/* Mobile menu toggle */}
             <button
-              type="button"
-              onClick={() => setSearchQuery('')}
-              className="absolute right-3 text-slate-400 p-1"
+              className="md:hidden p-2 rounded-xl text-slate-600 hover:text-amber-700 hover:bg-amber-50 transition-all"
+              onClick={() => setMobileOpen(!mobileOpen)}
+              aria-label="Menu"
             >
-              <X className="w-3.5 h-3.5" />
+              {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
-          )}
-        </form>
+          </div>
+        </div>
       </div>
 
-      {/* Mobile Menu Drawer */}
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden flex">
-          <div
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
-            onClick={() => setMobileMenuOpen(false)}
-          />
-
-          <div className="relative w-4/5 max-w-sm bg-white h-full shadow-2xl flex flex-col z-10 animate-slide-up">
-            <div className="p-5 border-b border-slate-100 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded bg-brand-dark text-amber-400 font-serif font-bold text-sm flex items-center justify-center">
-                  R
-                </span>
-                <span className="font-serif font-bold text-lg text-brand-dark">
-                  HOUSE OF RCR
-                </span>
-              </div>
-              <button
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-2 text-slate-400 hover:text-slate-700 rounded-lg"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="p-5 flex-1 overflow-y-auto">
-              <div className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
+      {/* Mobile Drawer */}
+      {mobileOpen && (
+        <div className="md:hidden border-t border-slate-200 bg-white">
+          <nav className="px-4 py-4 space-y-1">
+            <Link
+              to="/"
+              onClick={() => setMobileOpen(false)}
+              className="block px-3 py-2.5 rounded-xl text-sm font-bold text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-colors"
+            >
+              Home
+            </Link>
+            <Link
+              to="/shop"
+              onClick={() => setMobileOpen(false)}
+              className="block px-3 py-2.5 rounded-xl text-sm font-bold text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-colors"
+            >
+              Shop
+            </Link>
+            <div className="pt-1 pb-1">
+              <p className="px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">
                 Categories
-              </div>
-              <div className="flex flex-col space-y-1">
-                <Link
-                  to="/shop"
-                  className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 text-sm font-semibold text-slate-900"
-                >
-                  <span>All Products</span>
-                  <ChevronRight className="w-4 h-4 text-slate-400" />
-                </Link>
-                {categories.map((cat) => (
+              </p>
+              <div className="grid grid-cols-2 gap-1">
+                {CATEGORIES.map((cat) => (
                   <Link
-                    key={cat.id}
-                    to={`/shop?category=${cat.slug}`}
-                    className="flex items-center justify-between p-3 rounded-xl hover:bg-amber-50/60 text-sm font-medium text-slate-700 hover:text-amber-800"
+                    key={cat.value}
+                    to={`/shop?category=${cat.value}`}
+                    onClick={() => setMobileOpen(false)}
+                    className="block px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-amber-50 hover:text-amber-700 transition-colors"
                   >
-                    <span>{cat.name}</span>
-                    <ChevronRight className="w-4 h-4 text-slate-300" />
+                    {cat.label}
                   </Link>
                 ))}
               </div>
-
-              <div className="mt-8 pt-6 border-t border-slate-100">
-                <Link
-                  to="/cart"
-                  className="flex items-center justify-between p-3 rounded-xl bg-slate-900 text-white text-sm font-semibold mb-2"
-                >
-                  <div className="flex items-center gap-2">
-                    <ShoppingBag className="w-4 h-4 text-amber-400" />
-                    <span>View Cart</span>
-                  </div>
-                  <span className="bg-amber-500 text-slate-950 font-bold px-2 py-0.5 rounded-full text-xs">
-                    {totalItemsCount}
-                  </span>
-                </Link>
-              </div>
             </div>
 
-            <div className="p-4 bg-slate-50 border-t border-slate-100 text-center">
-              <div className="flex items-center justify-center gap-1.5 text-xs text-slate-500">
-                <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                <span>100% Original Indian Clothing</span>
-              </div>
+            <div className="border-t border-slate-100 pt-3 mt-2">
+              {isAuthenticated ? (
+                <>
+                  <Link
+                    to="/account"
+                    onClick={() => setMobileOpen(false)}
+                    className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-bold text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-colors"
+                  >
+                    <User className="w-4 h-4" /> My Account
+                  </Link>
+                  <button
+                    onClick={() => {
+                      setMobileOpen(false);
+                      handleLogout();
+                    }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-bold text-rose-600 hover:bg-rose-50 transition-colors"
+                  >
+                    <LogOut className="w-4 h-4" /> Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    onClick={() => setMobileOpen(false)}
+                    className="block px-3 py-2.5 rounded-xl text-sm font-bold text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-colors"
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    to="/register"
+                    onClick={() => setMobileOpen(false)}
+                    className="block px-3 py-2.5 rounded-xl text-sm font-bold text-amber-700 hover:bg-amber-50 transition-colors"
+                  >
+                    Create Account
+                  </Link>
+                </>
+              )}
             </div>
-          </div>
+          </nav>
         </div>
       )}
-    </>
+    </header>
   );
 };
 

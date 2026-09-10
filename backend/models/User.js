@@ -46,11 +46,12 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Hash password before saving
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
+// Hash password before saving.
+// NOTE: In Mongoose 7+, async pre-hooks are resolved via the returned Promise.
+// Do NOT accept or call `next` in an async hook — it is undefined and will throw.
+userSchema.pre('save', async function () {
+  if (!this.isModified('password')) return;
   this.password = await bcrypt.hash(this.password, 12);
-  next();
 });
 
 // Compare candidate password with stored hash

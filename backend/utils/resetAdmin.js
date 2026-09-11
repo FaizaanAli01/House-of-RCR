@@ -44,21 +44,24 @@ try {
   if (deleted.deletedCount > 0) {
     console.log(`[reset] Deleted old account for "${email}".`);
   } else {
-    console.log(`[reset] No existing account found for "${email}" (that\'s fine).`);
+    console.log(`[reset] No existing account found for "${email}" (that's fine).`);
   }
 
-  // Step 2 — Create a fresh admin with plain-text password
-  // The User model\'s pre-save hook will hash it exactly once.
+  // Step 2 — Hash the password manually.
+  // The User model has NO pre-save hook — hashing is done explicitly here,
+  // matching how authController.js handles registration.
+  const hashedPassword = bcrypt.hashSync(password, 12);
+
+  // Step 3 — Create fresh admin with the hashed password
   const admin = await User.create({
     name: 'Admin',
     email,
-    password,   // plain text — pre-save hook hashes this
+    password: hashedPassword,
     role: 'admin',
   });
   console.log(`[reset] Created fresh admin account for "${email}".`);
 
-  // Step 3 — Immediately verify the stored hash matches the plain password
-  // Re-fetch with password field to confirm what was actually saved.
+  // Step 4 — Immediately verify: re-fetch and compare
   const saved = await User.findById(admin._id).select('+password');
   const passwordOk = await bcrypt.compare(password, saved.password);
 
@@ -68,8 +71,7 @@ try {
     console.log(`        Password: ${password}`);
     console.log('        Go to: http://localhost:5173/login\n');
   } else {
-    console.error('\n[reset] PASSWORD MISMATCH ❌ The pre-save hook may be double-hashing.');
-    console.error('        Check your User model \'s pre-save hook is using bcrypt correctly.\n');
+    console.error('\n[reset] PASSWORD MISMATCH ❌ Something is wrong with bcrypt storage.\n');
     process.exit(1);
   }
 

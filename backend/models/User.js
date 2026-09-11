@@ -40,6 +40,13 @@ const userSchema = new mongoose.Schema(
       minlength: [6, 'Password must be at least 6 characters'],
       select: false,
     },
+    // Phase 4: role-based access control.
+    // Existing users default to "customer" automatically via MongoDB schema default.
+    role: {
+      type: String,
+      enum: ['customer', 'admin'],
+      default: 'customer',
+    },
     phone: { type: String, trim: true, default: '' },
     address: { type: addressSchema, default: () => ({}) },
   },

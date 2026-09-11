@@ -5,43 +5,31 @@
  * Run from the /backend directory.
  *
  * COMMANDS:
- *   Create a new admin account:
- *     node utils/createAdmin.js create <email> <password>
+ *   node utils/createAdmin.js create  <email> <password>   Create a new admin
+ *   node utils/createAdmin.js promote <email>              Promote existing user to admin
+ *   node utils/createAdmin.js demote  <email>              Demote admin to customer
+ *   node utils/createAdmin.js list                         List all admin accounts
+ *   node utils/createAdmin.js remove  <email>              Remove an admin account
  *
- *   Promote an existing customer to admin:
- *     node utils/createAdmin.js promote <email>
- *
- *   Demote an admin back to customer:
- *     node utils/createAdmin.js demote <email>
- *
- *   List all admin accounts (never shows passwords):
- *     node utils/createAdmin.js list
- *
- *   Remove an admin account entirely:
- *     node utils/createAdmin.js remove <email>
- *
- * NOTES:
- *   - Passwords are NEVER hardcoded — always pass via CLI args.
- *   - No public registration page is used.
- *   - Multiple admins can exist simultaneously with their own credentials.
- *   - The last admin account cannot be demoted or removed (safety guard).
- *   - Password hashing is handled by the User model pre-save hook (never double-hash).
+ * NOTE: The User model has NO pre-save hook for hashing.
+ *       Passwords are hashed explicitly here with bcrypt before saving,
+ *       matching exactly how authController.js handles it.
  */
 
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import bcrypt from 'bcryptjs';
 import mongoose from 'mongoose';
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname  = path.dirname(__filename);
 dotenv.config({ path: path.join(__dirname, '../../.env') });
 
 import { connectDB } from '../config/db.js';
 import User from '../models/User.js';
 
 const [, , command, emailArg, passwordArg] = process.argv;
-
 const COMMANDS = ['create', 'promote', 'demote', 'list', 'remove'];
 
 if (!command || !COMMANDS.includes(command)) {
@@ -68,7 +56,7 @@ const normalizeEmail = (e) => (e || '').toLowerCase().trim();
 try {
   await connectDB();
 
-  // ── LIST ──────────────────────────────────────────────────────────────────
+  // ── LIST
   if (command === 'list') {
     const admins = await User.find({ role: 'admin' }).select('name email createdAt').sort('email');
     if (admins.length === 0) {
@@ -84,54 +72,40 @@ try {
     process.exit(0);
   }
 
-  // All other commands require an email
   const email = normalizeEmail(emailArg);
   if (!email) {
     console.error(`[${command}] ERROR: Email is required.`);
     process.exit(1);
   }
 
-  // ── CREATE ────────────────────────────────────────────────────────────────
+  // ── CREATE
   if (command === 'create') {
     const password = passwordArg || process.env.ADMIN_PASSWORD;
     if (!password) {
       console.error(`[create] ERROR: Password is required.\n  Usage: node utils/createAdmin.js create <email> <password>`);
       process.exit(1);
     }
-    if (password.length < 8) {
-      console.error('[create] ERROR: Password must be at least 8 characters.');
+    if (password.length < 6) {
+      console.error('[create] ERROR: Password must be at least 6 characters.');
       process.exit(1);
     }
 
+    // Hash password explicitly — User model has no pre-save hook
+    const hashedPassword = bcrypt.hashSync(password, 12);
+
     const existing = await User.findOne({ email });
     if (existing) {
-      if (existing.role === 'admin') {
-        // Update password only — pre-save hook will hash it
-        existing.password = password;
-        existing.role = 'admin';
-        await existing.save();
-        console.log(`[create] SUCCESS: Admin "${email}" already existed — password updated.`);
-      } else {
-        // Promote customer to admin and set new password
-        // Assign plain password — pre-save hook hashes it automatically
-        existing.role = 'admin';
-        existing.password = password;
-        await existing.save();
-        console.log(`[create] SUCCESS: Promoted "${email}" to admin and updated password.`);
-      }
+      existing.role = 'admin';
+      existing.password = hashedPassword;
+      await existing.save();
+      console.log(`[create] SUCCESS: "${email}" is now an admin (password updated).`);
     } else {
-      // Create brand-new admin user with plain password — pre-save hook hashes it
-      await User.create({
-        name: 'Admin',
-        email,
-        password,   // plain text — User model pre-save hook hashes this
-        role: 'admin',
-      });
+      await User.create({ name: 'Admin', email, password: hashedPassword, role: 'admin' });
       console.log(`[create] SUCCESS: Admin account created for "${email}".`);
     }
   }
 
-  // ── PROMOTE ───────────────────────────────────────────────────────────────
+  // ── PROMOTE (role only, password unchanged)
   else if (command === 'promote') {
     const user = await User.findOne({ email });
     if (!user) {
@@ -141,14 +115,13 @@ try {
     if (user.role === 'admin') {
       console.log(`[promote] "${email}" is already an admin. No changes made.`);
     } else {
-      // Only changing role — password untouched, pre-save hook skips re-hashing
       user.role = 'admin';
       await user.save();
       console.log(`[promote] SUCCESS: "${email}" (${user.name}) is now an admin.`);
     }
   }
 
-  // ── DEMOTE ────────────────────────────────────────────────────────────────
+  // ── DEMOTE
   else if (command === 'demote') {
     const user = await User.findOne({ email });
     if (!user) {
@@ -160,17 +133,16 @@ try {
     } else {
       const adminCount = await User.countDocuments({ role: 'admin' });
       if (adminCount <= 1) {
-        console.error('[demote] ERROR: Cannot demote the last remaining admin account.');
-        console.error('         Create another admin first, then demote this one.');
+        console.error('[demote] ERROR: Cannot demote the last remaining admin.');
         process.exit(1);
       }
       user.role = 'customer';
       await user.save();
-      console.log(`[demote] SUCCESS: "${email}" has been demoted to customer.`);
+      console.log(`[demote] SUCCESS: "${email}" demoted to customer.`);
     }
   }
 
-  // ── REMOVE ────────────────────────────────────────────────────────────────
+  // ── REMOVE
   else if (command === 'remove') {
     const user = await User.findOne({ email });
     if (!user) {
@@ -180,13 +152,12 @@ try {
     if (user.role === 'admin') {
       const adminCount = await User.countDocuments({ role: 'admin' });
       if (adminCount <= 1) {
-        console.error('[remove] ERROR: Cannot remove the last remaining admin account.');
-        console.error('         Create another admin first, then remove this one.');
+        console.error('[remove] ERROR: Cannot remove the last remaining admin.');
         process.exit(1);
       }
     }
     await User.deleteOne({ _id: user._id });
-    console.log(`[remove] SUCCESS: Account "${email}" has been permanently deleted.`);
+    console.log(`[remove] SUCCESS: "${email}" permanently deleted.`);
   }
 
   await mongoose.disconnect();

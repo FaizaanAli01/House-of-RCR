@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
   );
   const [authLoading, setAuthLoading] = useState(true);
 
-  // Verify token on mount
+  // Verify token on mount — also refreshes role from server
   useEffect(() => {
     if (!token) {
       setAuthLoading(false);
@@ -105,6 +105,8 @@ export const AuthProvider = ({ children }) => {
         token,
         authLoading,
         isAuthenticated: !!user,
+        // Phase 4: admin gate — only true when backend confirms role === 'admin'
+        isAdmin: user?.role === 'admin',
         register,
         login,
         logout,

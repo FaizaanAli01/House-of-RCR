@@ -1,1 +1,146 @@
-aW1wb3J0IFJlYWN0LCB7IHVzZVN0YXRlLCB1c2VFZmZlY3QgfSBmcm9tICdyZWFjdCc7CmltcG9ydCB7IHVzZVBhcmFtcywgTGluayB9IGZyb20gJ3JlYWN0LXJvdXRlci1kb20nOwppbXBvcnQgeyBDaGV2cm9uUmlnaHQsIEFycm93TGVmdCwgQWxlcnRDaXJjbGUsIExvYWRlcjIgfSBmcm9tICdsdWNpZGUtcmVhY3QnOwppbXBvcnQgSW1hZ2VHYWxsZXJ5IGZyb20gJy4uL2NvbXBvbmVudHMvcHJvZHVjdC9JbWFnZUdhbGxlcnknOwppbXBvcnQgUHJvZHVjdEluZm8gZnJvbSAnLi4vY29tcG9uZW50cy9wcm9kdWN0L1Byb2R1Y3RJbmZvJzsKaW1wb3J0IFNwZWNzQWNjb3JkaW9uIGZyb20gJy4uL2NvbXBvbmVudHMvcHJvZHVjdC9TcGVjc0FjY29yZGlvbic7CmltcG9ydCBSZWxhdGVkUHJvZHVjdHMgZnJvbSAnLi4vY29tcG9uZW50cy9wcm9kdWN0L1JlbGF0ZWRQcm9kdWN0cyc7CmltcG9ydCB7IGZldGNoUHJvZHVjdEJ5SWQgfSBmcm9tICcuLi9zZXJ2aWNlcy9hcGknOwoKY29uc3QgUHJvZHVjdERldGFpbFBhZ2UgPSAoKSA9PiB7CiAgY29uc3QgeyBpZCB9ID0gdXNlUGFyYW1zKCk7CgogIGNvbnN0IFtwcm9kdWN0LCBzZXRQcm9kdWN0XSA9IHVzZVN0YXRlKG51bGwpOwogIGNvbnN0IFtsb2FkaW5nLCBzZXRMb2FkaW5nXSA9IHVzZVN0YXRlKHRydWUpOwogIGNvbnN0IFtlcnJvciwgc2V0RXJyb3JdID0gdXNlU3RhdGUobnVsbCk7CgogIHVzZUVmZmVjdCgoKSA9PiB7CiAgICB3aW5kb3cuc2Nyb2xsVG8oeyB0b3A6IDAsIGJlaGF2aW9yOiAnc21vb3RoJyB9KTsKICAgIGxldCBpc01vdW50ZWQgPSB0cnVlOwoKICAgIGNvbnN0IGxvYWRQcm9kdWN0ID0gYXN5bmMgKCkgPT4gewogICAgICBzZXRMb2FkaW5nKHRydWUpOwogICAgICBzZXRQcm9kdWN0KG51bGwpOyAvLyBDbGVhciBzdGFsZSBwcm9kdWN0IGltbWVkaWF0ZWx5IHNvIG9sZCBkYXRhIG5ldmVyIGZsYXNoZXMKICAgICAgc2V0RXJyb3IobnVsbCk7CiAgICAgIHRyeSB7CiAgICAgICAgY29uc3QgZGF0YSA9IGF3YWl0IGZldGNoUHJvZHVjdEJ5SWQoaWQpOwogICAgICAgIGlmIChpc01vdW50ZWQpIHsKICAgICAgICAgIHNldFByb2R1Y3QoZGF0YS5wcm9kdWN0KTsKICAgICAgICB9CiAgICAgIH0gY2F0Y2ggKGVycikgewogICAgICAgIGlmIChpc01vdW50ZWQpIHsKICAgICAgICAgIHNldEVycm9yKGVyci5tZXNzYWdlIHx8ICdQcm9kdWN0IG5vdCBmb3VuZCcpOwogICAgICAgIH0KICAgICAgfSBmaW5hbGx5IHsKICAgICAgICBpZiAoaXNNb3VudGVkKSB7CiAgICAgICAgICBzZXRMb2FkaW5nKGZhbHNlKTsKICAgICAgICB9CiAgICAgIH0KICAgIH07CgogICAgbG9hZFByb2R1Y3QoKTsKICAgIHJldHVybiAoKSA9PiB7CiAgICAgIGlzTW91bnRlZCA9IGZhbHNlOwogICAgfTsKICB9LCBbaWRdKTsKCiAgaWYgKGxvYWRpbmcpIHsKICAgIHJldHVybiAoCiAgICAgIDxkaXYgY2xhc3NOYW1lPSJtaW4taC1bNzB2aF0gYmctYnJhbmQtNTAgZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgcC00Ij4KICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBmbGV4LWNvbCBpdGVtcy1jZW50ZXIgZ2FwLTMgdGV4dC1zbGF0ZS01MDAiPgogICAgICAgICAgPExvYWRlcjIgY2xhc3NOYW1lPSJ3LTEwIGgtMTAgYW5pbWF0ZS1zcGluIHRleHQtYW1iZXItNjAwIiAvPgogICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJ0ZXh0LXNtIGZvbnQtc2VtaWJvbGQiPkxvYWRpbmcgcHJvZHVjdCBkZXRhaWxzLi4uPC9zcGFuPgogICAgICAgIDwvZGl2PgogICAgICA8L2Rpdj4KICAgICk7CiAgfQoKICBpZiAoZXJyb3IgfHwgIXByb2R1Y3QpIHsKICAgIHJldHVybiAoCiAgICAgIDxkaXYgY2xhc3NOYW1lPSJtaW4taC1bNzB2aF0gYmctYnJhbmQtNTAgZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgcC00Ij4KICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ibWF4LXctbWQgdy1mdWxsIGJnLXdoaXRlIHJvdW5kZWQtM3hsIHA4IHRleHQtY2VudGVyIGJvcmRlciBib3JkZXItc2xhdGUtMjAwIHNoYWRvdy1zbSI+CiAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0idy0xNiBoLTE2IGJnLXJvc2UtNTAgdGV4dC1yb3NlLTYwMCByb3VuZGVkLWZ1bGwgZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgbXgtYXV0byBtYi00Ij4KICAgICAgICAgICAgPEFsZXJ0Q2lyY2xlIGNsYXNzTmFtZT0idy04IGgtOCIgLz4KICAgICAgICAgIDwvZGl2PgogICAgICAgICAgPGgyIGNsYXNzTmFtZT0iZm9udC1zZXJpZiB0ZXh0LTJ4bCBmb250LWJvbGQgdGV4dC1zbGF0ZS05MDAgbWItMiI+CiAgICAgICAgICAgIFByb2R1Y3QgTm90IEZvdW5kCiAgICAgICAgICA8L2gyPgogICAgICAgICAgPHAgY2xhc3NOYW1lPSJ0ZXh0LXhzIHRleHQtc2xhdGUtNTAwIG1iLTYgbGVhZGluZy1yZWxheGVkIj4KICAgICAgICAgICAgVGhlIHByb2R1Y3QgeW91IGFyZSBsb29raW5nIGZvciBpcyBjdXJyZW50bHkgdW5hdmFpbGFibGUgb3IgbWF5IGhhdmUgYmVlbiByZW1vdmVkIGZyb20gb3VyIGNhdGFsb2cuCiAgICAgICAgICA8L3A+CiAgICAgICAgICA8TGluawogICAgICAgICAgICB0bz0iL3Nob3AiCiAgICAgICAgICAgIGNsYXNzTmFtZT0iaW5saW5lLWZsZXggaXRlbXMtY2VudGVyIGdhcC0yIHB4LTYgcHktMyBiZy1icmFuZC1kYXJrIHRleHQtd2hpdGUgcm91bmRlZC14bCB0ZXh0LXhzIGZvbnQtYm9sZCB1cHBlcmNhc2UgdHJhY2tpbmctd2lkZXIgaG92ZXI6YmctYmxhY2sgdHJhbnNpdGlvbi1jb2xvcnMiCiAgICAgICAgICA+CiAgICAgICAgICAgIDxBcnJvd0xlZnQgY2xhc3NOYW1lPSJ3LTQgaC00IHRleHQtYW1iZXItNDAwIiAvPgogICAgICAgICAgICA8c3Bhbj5CYWNrIHRvIEFsbCBQcm9kdWN0czwvc3Bhbj4KICAgICAgICAgIDwvTGluaz4KICAgICAgICA8L2Rpdj4KICAgICAgPC9kaXY+CiAgICApOwogIH0KCiAgcmV0dXJuICgKICAgIDxkaXYgY2xhc3NOYW1lPSJiZy1icmFuZC01MCBtaW4taC1zY3JlZW4gcHktOCI+CiAgICAgIDxkaXYgY2xhc3NOYW1lPSJtYXgtdy03eGwgbXgtYXV0byBweC00IHNtOnB4LTYgbGc6cHgtOCI+CiAgICAgICAgCiAgICAgICAgey8qIEJyZWFkY3J1bWIgTmF2aWdhdGlvbiAqL30KICAgICAgICA8bmF2IGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTIgdGV4dC14cyB0ZXh0LXNsYXRlLTUwMCBtYi02IG92ZXJmbG93LXgtYXV0byB3aGl0ZXNwYWNlLW5vd3JhcCBwYi0yIj4KICAgICAgICAgIDxMaW5rIHRvPSIvIiBjbGFzc05hbWU9ImhvdmVyOnRleHQtYW1iZXItODAwIHRyYW5zaXRpb24tY29sb3JzIj4KICAgICAgICAgICAgSG9tZQogICAgICAgICAgPC9MaW5rPgogICAgICAgICAgPENoZXZyb25SaWdodCBjbGFzc05hbWU9Inc-My41IGgtMy41IHRleHQtc2xhdGUtNDAwIGZsZXgtc2hyaW5rLTAiIC8+CiAgICAgICAgICA8TGluayB0bz0iL3Nob3AiIGNsYXNzTmFtZT0iaG92ZXI6dGV4dC1hbWJlci04MDAgdHJhbnNpdGlvbi1jb2xvcnMiPgogICAgICAgICAgICBTaG9wCiAgICAgICAgICA8L0xpbms+CiAgICAgICAgICA8Q2hldnJvblJpZ2h0IGNsYXNzTmFtZT0idy0zLjUgaC0zLjUgdGV4dC1zbGF0ZS00MDAgZmxleC1zaHJpbmstMCIgLz4KICAgICAgICAgIDxMaW5rCiAgICAgICAgICAgIHRvPXtgL3Nob3A/Y2F0ZWdvcnk9JHtwcm9kdWN0LmNhdGVnb3J5U2x1ZyB8fCAnYWxsJ31gfQogICAgICAgICAgICBjbGFzc05hbWU9ImhvdmVyOnRleHQtYW1iZXItODAwIHRyYW5zaXRpb24tY29sb3JzIgogICAgICAgICAgPgogICAgICAgICAgICB7cHJvZHVjdC5jYXRlZ29yeX0KICAgICAgICAgIDwvTGluaz4KICAgICAgICAgIDxDaGV2cm9uUmlnaHQgY2xhc3NOYW1lPSJ3LTMuNSBoLTMuNSB0ZXh0LXNsYXRlLTQwMCBmbGV4LXNocmluay0wIiAvPgogICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJ0ZXh0LXNsYXRlLTgwMCBmb250LXNlbWlib2xkIHRydW5jYXRlIG1heC13LXhzIj4KICAgICAgICAgICAge3Byb2R1Y3QubmFtZX0KICAgICAgICAgIDwvc3Bhbj4KICAgICAgICA8L25hdj4KCiAgICAgICAgey8qIFByb2R1Y3QgRGV0YWlscyBHcmlkICovfQogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJncmlkIGdyaWQtY29scy0xIGxnOmdyaWQtY29scy0yIGdhcC0xMCBsZzpnYXAtMTQgYmctd2hpdGUgcm91bmRlZC0zeGwgcC02IHNtOnAtMTAgYm9yZGVyIGJvcmRlci1zbGF0ZS0yMDAvODAgc2hhZG93LXNtIj4KICAgICAgICAgIAogICAgICAgICAgey8qIExlZnQ6IEltYWdlcyAqL30KICAgICAgICAgIDxkaXY+CiAgICAgICAgICAgIHsvKgogICAgICAgICAgICAgIGtleT17aWR9IGZvcmNlcy1yZW1vdW50IG9mIEltYWdlR2FsbGVyeSB3aGVuIG5hdmlnYXRpbmcgYmV0d2VlbiBwcm9kdWN0cy4KICAgICAgICAgICAgICBUaGlzIHJlc2V0cyBzZWxlY3RlZEltYWdlSW5kZXggc3RhdGUgc28geW91IGFsd2F5cyBzZWUgdGhlIGZpcnN0CiAgICAgICAgICAgICAgaW1hZ2Ugb2YgdGhlIG5ldyBwcm9kdWN0IHJhdGhlciB0aGFuIGEgc3RhbGUgaW5kZXggZnJvbSB0aGUgcHJldmlvdXMgb25lLgogICAgICAgICAgICAqL30KICAgICAgICAgICAgPEltYWdlR2FsbGVyeQogICAgICAgICAgICAgIGtleT17aWR9CiAgICAgICAgICAgICAgaW1hZ2VzPXtwcm9kdWN0LmltYWdlcyB8fCBbXX0KICAgICAgICAgICAgICBwcm9kdWN0TmFtZT17cHJvZHVjdC5uYW1lfQogICAgICAgICAgICAgIGJhZGdlPXtwcm9kdWN0LmJhZGdlfQogICAgICAgICAgICAgIGRpc2NvdW50PXtwcm9kdWN0LmRpc2NvdW50fQogICAgICAgICAgICAvPgogICAgICAgICAgPC9kaXY+CgogICAgICAgICAgey8qIFJpZ2h0OiBJbmZvICovfQogICAgICAgICAgPGRpdj4KICAgICAgICAgICAgPFByb2R1Y3RJbmZvIHByb2R1Y3Q9e3Byb2R1Y3R9IC8+CiAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgPC9kaXY+CgogICAgICAgIHsvKiBTcGVjcyBBY2NvcmRpb24gKi99CiAgICAgICAgPFNwZWNzQWNjb3JkaW9uIHNwZWNpZmljYXRpb25zPXtwcm9kdWN0LnNwZWNpZmljYXRpb25zIHx8IHt9fSAvPgoKICAgICAgICB7LyogUmVsYXRlZCBQcm9kdWN0cyAqL30KICAgICAgICA8UmVsYXRlZFByb2R1Y3RzIGN1cnJlbnRQcm9kdWN0PXtwcm9kdWN0fSAvPgoKICAgICAgPC9kaXY+CiAgICA8L2Rpdj4KICApOwp9OwoKZXhwb3J0IGRlZmF1bHQgUHJvZHVjdERldGFpbFBhZ2U7Cg==
+import React, { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { ChevronRight, ArrowLeft, AlertCircle, Loader2 } from 'lucide-react';
+import ImageGallery from '../components/product/ImageGallery';
+import ProductInfo from '../components/product/ProductInfo';
+import SpecsAccordion from '../components/product/SpecsAccordion';
+import RelatedProducts from '../components/product/RelatedProducts';
+import { fetchProductById } from '../services/api';
+
+const ProductDetailPage = () => {
+  const { id } = useParams();
+
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    let isMounted = true;
+
+    const loadProduct = async () => {
+      setLoading(true);
+      setProduct(null); // Clear stale product immediately so old data never flashes
+      setError(null);
+      try {
+        const data = await fetchProductById(id);
+        if (isMounted) {
+          setProduct(data.product);
+        }
+      } catch (err) {
+        if (isMounted) {
+          setError(err.message || 'Product not found');
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadProduct();
+    return () => {
+      isMounted = false;
+    };
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-[70vh] bg-brand-50 flex items-center justify-center p-4">
+        <div className="flex flex-col items-center gap-3 text-slate-500">
+          <Loader2 className="w-10 h-10 animate-spin text-amber-600" />
+          <span className="text-sm font-semibold">Loading product details...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !product) {
+    return (
+      <div className="min-h-[70vh] bg-brand-50 flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-white rounded-3xl p-8 text-center border border-slate-200 shadow-sm">
+          <div className="w-16 h-16 bg-rose-50 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <AlertCircle className="w-8 h-8" />
+          </div>
+          <h2 className="font-serif text-2xl font-bold text-slate-900 mb-2">
+            Product Not Found
+          </h2>
+          <p className="text-xs text-slate-500 mb-6 leading-relaxed">
+            The product you are looking for is currently unavailable or may have been removed from our catalog.
+          </p>
+          <Link
+            to="/shop"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-brand-dark text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-black transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4 text-amber-400" />
+            <span>Back to All Products</span>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-brand-50 min-h-screen py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        {/* Breadcrumb Navigation */}
+        <nav className="flex items-center gap-2 text-xs text-slate-500 mb-6 overflow-x-auto whitespace-nowrap pb-2">
+          <Link to="/" className="hover:text-amber-800 transition-colors">
+            Home
+          </Link>
+          <ChevronRight className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+          <Link to="/shop" className="hover:text-amber-800 transition-colors">
+            Shop
+          </Link>
+          <ChevronRight className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+          <Link
+            to={`/shop?category=${product.categorySlug || 'all'}`}
+            className="hover:text-amber-800 transition-colors"
+          >
+            {product.category}
+          </Link>
+          <ChevronRight className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+          <span className="text-slate-800 font-semibold truncate max-w-xs">
+            {product.name}
+          </span>
+        </nav>
+
+        {/* Product Details Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/80 shadow-sm">
+
+          {/* Left: Images */}
+          <div>
+            {/*
+              key={id} forces remount of ImageGallery when navigating between products.
+              This resets selectedImageIndex state so you always see the first
+              image of the new product rather than a stale index from the previous one.
+            */}
+            <ImageGallery
+              key={id}
+              images={product.images || []}
+              productName={product.name}
+              badge={product.badge}
+              discount={product.discount}
+            />
+          </div>
+
+          {/* Right: Info */}
+          <div>
+            <ProductInfo product={product} />
+          </div>
+
+        </div>
+
+        {/* Specs Accordion */}
+        <SpecsAccordion specifications={product.specifications || {}} />
+
+        {/* Related Products */}
+        <RelatedProducts currentProduct={product} />
+
+      </div>
+    </div>
+  );
+};
+
+export default ProductDetailPage;

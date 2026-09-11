@@ -16,7 +16,7 @@ const orderItemSchema = new mongoose.Schema(
     itemTotal: { type: Number, required: true, min: 0 },
   },
   { _id: false }
- );
+);
 
 const shippingAddressSchema = new mongoose.Schema(
   {
@@ -49,9 +49,10 @@ const orderSchema = new mongoose.Schema(
     promoCode: { type: String, default: null },
     taxAmount: { type: Number, default: 0, min: 0 },
     total: { type: Number, required: true, min: 0 },
+    // Phase 4: added Processing status for admin order management
     status: {
       type: String,
-      enum: ['Pending', 'Confirmed', 'Shipped', 'Delivered', 'Cancelled'],
+      enum: ['Pending', 'Confirmed', 'Processing', 'Shipped', 'Delivered', 'Cancelled'],
       default: 'Pending',
     },
   },

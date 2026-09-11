@@ -99,15 +99,32 @@ export const login = async (req, res, next) => {
       });
     }
 
-    const user = await User.findOne({
-      email: email.toLowerCase().trim(),
-    }).select('+password');
+    const normalizedEmail = email.toLowerCase().trim();
+
+    // ── DIAGNOSTIC (safe: no passwords or hashes are logged) ──────────────────
+    console.log(`[Auth:login] Attempt  email="${normalizedEmail}"`);
+
+    const user = await User.findOne({ email: normalizedEmail }).select('+password');
+
+    console.log(`[Auth:login] User found: ${!!user}`);
+    if (user) {
+      const hashPrefix = user.password
+        ? user.password.substring(0, 7)   // e.g. "$2a$12$" for bcrypt — never the full hash
+        : 'MISSING';
+      console.log(`[Auth:login] Password field present: ${!!user.password}  |  hash prefix: ${hashPrefix}`);
+      // A valid bcrypt hash always starts with "$2a$" or "$2b$".
+      // If the prefix is anything else the stored value is NOT a proper hash.
+    }
+    // ── END DIAGNOSTIC ────────────────────────────────────────────────────────
 
     if (!user || !(await user.comparePassword(password))) {
+      if (user) console.log('[Auth:login] Password comparison: FAILED');
       return res
         .status(401)
         .json({ success: false, message: 'Invalid email or password.' });
     }
+
+    console.log('[Auth:login] Password comparison: OK — issuing token');
 
     const token = generateToken(user._id);
 

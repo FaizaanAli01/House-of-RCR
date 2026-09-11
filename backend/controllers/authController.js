@@ -5,10 +5,13 @@ import User from '../models/User.js';
 const generateToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 
+// Phase 4: include role so frontend can gate admin UI correctly.
+// Passwords are NEVER included.
 const safeUser = (user) => ({
   _id: user._id,
   name: user.name,
   email: user.email,
+  role: user.role || 'customer',
   phone: user.phone || '',
   address: user.address || {},
   createdAt: user.createdAt,
@@ -61,10 +64,12 @@ export const register = async (req, res, next) => {
 
     const hashedPassword = bcrypt.hashSync(password, 12);
 
+    // New registrations are always customers — role cannot be set via registration.
     const user = await User.create({
       name: name.trim(),
       email: email.toLowerCase().trim(),
       password: hashedPassword,
+      role: 'customer',
     });
 
     const token = generateToken(user._id);
@@ -80,7 +85,7 @@ export const register = async (req, res, next) => {
   }
 };
 
-// @desc    Login customer
+// @desc    Login customer or admin
 // @route   POST /api/auth/login
 // @access  Public
 export const login = async (req, res, next) => {

@@ -1,12 +1,32 @@
 /**
- * House of RCR - Admin Account Creator
- * Usage (from /backend):
- *   node utils/createAdmin.js admin@example.com StrongPassword123
- * Or via env:
- *   ADMIN_EMAIL=admin@example.com ADMIN_PASSWORD=StrongPass node utils/createAdmin.js
+ * House of RCR — Admin Account Manager
+ * =====================================
+ * A safe CLI tool to manage admin accounts.
+ * Run from the /backend directory.
  *
- * Passwords are NEVER hardcoded. Do NOT expose via HTTP.
+ * COMMANDS:
+ *   Create a new admin account:
+ *     node utils/createAdmin.js create <email> <password>
+ *
+ *   Promote an existing customer to admin:
+ *     node utils/createAdmin.js promote <email>
+ *
+ *   Demote an admin back to customer:
+ *     node utils/createAdmin.js demote <email>
+ *
+ *   List all admin accounts (never shows passwords):
+ *     node utils/createAdmin.js list
+ *
+ *   Remove an admin account entirely:
+ *     node utils/createAdmin.js remove <email>
+ *
+ * NOTES:
+ *   - Passwords are NEVER hardcoded — always pass via CLI args or env vars.
+ *   - No public registration page is used.
+ *   - Multiple admins can exist simultaneously, each with their own credentials.
+ *   - The last admin account cannot be demoted or removed (safety guard).
  */
+
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -20,39 +40,154 @@ dotenv.config({ path: path.join(__dirname, '../../.env') });
 import { connectDB } from '../config/db.js';
 import User from '../models/User.js';
 
-const email = process.env.ADMIN_EMAIL || process.argv[2];
-const password = process.env.ADMIN_PASSWORD || process.argv[3];
+const [, , command, emailArg, passwordArg] = process.argv;
 
-if (!email || !password) {
-  console.error('\n[createAdmin] ERROR: Email and password are required.');
-  console.error('Usage: node utils/createAdmin.js <email> <password>');
+const COMMANDS = ['create', 'promote', 'demote', 'list', 'remove'];
+
+if (!command || !COMMANDS.includes(command)) {
+  console.log(`
+House of RCR — Admin Account Manager
+=====================================
+Usage:
+  node utils/createAdmin.js create  <email> <password>   Create a new admin
+  node utils/createAdmin.js promote <email>              Promote existing user to admin
+  node utils/createAdmin.js demote  <email>              Demote admin to customer
+  node utils/createAdmin.js list                         List all admin accounts
+  node utils/createAdmin.js remove  <email>              Remove an admin account
+
+Examples:
+  node utils/createAdmin.js create admin@houseofrcr.com MyStr0ngPass!
+  node utils/createAdmin.js promote faizaan@example.com
+  node utils/createAdmin.js list
+  node utils/createAdmin.js demote old-admin@example.com
+`);
   process.exit(1);
 }
-if (password.length < 6) {
-  console.error('[createAdmin] ERROR: Password must be at least 6 characters.');
-  process.exit(1);
-}
+
+const normalizeEmail = (e) => (e || '').toLowerCase().trim();
 
 try {
   await connectDB();
-  const existing = await User.findOne({ email: email.toLowerCase().trim() });
-  if (existing) {
-    if (existing.role === 'admin') {
-      console.log(`[createAdmin] "${email}" is already an admin. No changes made.`);
+
+  // ── LIST ──────────────────────────────────────────────────────────────────
+  if (command === 'list') {
+    const admins = await User.find({ role: 'admin' }).select('name email createdAt').sort('email');
+    if (admins.length === 0) {
+      console.log('\n[list] No admin accounts found.\n');
     } else {
-      existing.role = 'admin';
-      await existing.save();
-      console.log(`[createAdmin] SUCCESS: Promoted "${email}" to admin.`);
+      console.log(`\n[list] ${admins.length} admin account(s):\n`);
+      admins.forEach((a, i) => {
+        console.log(`  ${i + 1}. ${a.name} <${a.email}>  (created: ${a.createdAt.toISOString().slice(0, 10)})`);
+      });
+      console.log();
     }
-  } else {
-    const hashedPassword = bcrypt.hashSync(password, 12);
-    await User.create({ name: 'Admin', email: email.toLowerCase().trim(), password: hashedPassword, role: 'admin' });
-    console.log(`[createAdmin] SUCCESS: Admin account created for "${email}".`);
+    await mongoose.disconnect();
+    process.exit(0);
   }
+
+  // All other commands require an email
+  const email = normalizeEmail(emailArg);
+  if (!email) {
+    console.error(`[${command}] ERROR: Email is required.`);
+    process.exit(1);
+  }
+
+  // ── CREATE ────────────────────────────────────────────────────────────────
+  if (command === 'create') {
+    const password = passwordArg || process.env.ADMIN_PASSWORD;
+    if (!password) {
+      console.error(`[create] ERROR: Password is required.\n  Usage: node utils/createAdmin.js create <email> <password>`);
+      process.exit(1);
+    }
+    if (password.length < 8) {
+      console.error('[create] ERROR: Password must be at least 8 characters.');
+      process.exit(1);
+    }
+
+    const existing = await User.findOne({ email });
+    if (existing) {
+      if (existing.role === 'admin') {
+        console.log(`[create] "${email}" is already an admin. No changes made.`);
+      } else {
+        // Promote + update password
+        existing.role = 'admin';
+        existing.password = bcrypt.hashSync(password, 12);
+        await existing.save();
+        console.log(`[create] SUCCESS: Promoted existing user "${email}" to admin and updated password.`);
+      }
+    } else {
+      await User.create({
+        name: 'Admin',
+        email,
+        password: bcrypt.hashSync(password, 12),
+        role: 'admin',
+      });
+      console.log(`[create] SUCCESS: Admin account created for "${email}".`);
+    }
+  }
+
+  // ── PROMOTE ───────────────────────────────────────────────────────────────
+  else if (command === 'promote') {
+    const user = await User.findOne({ email });
+    if (!user) {
+      console.error(`[promote] ERROR: No user found with email "${email}".`);
+      process.exit(1);
+    }
+    if (user.role === 'admin') {
+      console.log(`[promote] "${email}" is already an admin. No changes made.`);
+    } else {
+      user.role = 'admin';
+      await user.save();
+      console.log(`[promote] SUCCESS: "${email}" (${user.name}) is now an admin.`);
+    }
+  }
+
+  // ── DEMOTE ────────────────────────────────────────────────────────────────
+  else if (command === 'demote') {
+    const user = await User.findOne({ email });
+    if (!user) {
+      console.error(`[demote] ERROR: No user found with email "${email}".`);
+      process.exit(1);
+    }
+    if (user.role !== 'admin') {
+      console.log(`[demote] "${email}" is not an admin. No changes made.`);
+    } else {
+      // Safety: do not demote the last admin
+      const adminCount = await User.countDocuments({ role: 'admin' });
+      if (adminCount <= 1) {
+        console.error('[demote] ERROR: Cannot demote the last remaining admin account.');
+        console.error('         Create another admin first, then demote this one.');
+        process.exit(1);
+      }
+      user.role = 'customer';
+      await user.save();
+      console.log(`[demote] SUCCESS: "${email}" has been demoted to customer.`);
+    }
+  }
+
+  // ── REMOVE ────────────────────────────────────────────────────────────────
+  else if (command === 'remove') {
+    const user = await User.findOne({ email });
+    if (!user) {
+      console.error(`[remove] ERROR: No user found with email "${email}".`);
+      process.exit(1);
+    }
+    if (user.role === 'admin') {
+      // Safety: do not remove the last admin
+      const adminCount = await User.countDocuments({ role: 'admin' });
+      if (adminCount <= 1) {
+        console.error('[remove] ERROR: Cannot remove the last remaining admin account.');
+        console.error('         Create another admin first, then remove this one.');
+        process.exit(1);
+      }
+    }
+    await User.deleteOne({ _id: user._id });
+    console.log(`[remove] SUCCESS: Account "${email}" has been permanently deleted.`);
+  }
+
   await mongoose.disconnect();
-  console.log('[createAdmin] Done.');
   process.exit(0);
 } catch (err) {
-  console.error('[createAdmin] FAILED:', err.message);
+  console.error(`[${command}] FAILED:`, err.message);
   process.exit(1);
 }

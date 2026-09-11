@@ -48,3 +48,17 @@ export const protect = async (req, res, next) => {
     next(error);
   }
 };
+
+/**
+ * adminOnly — must be used AFTER protect.
+ * Returns 403 if the authenticated user is not an admin.
+ */
+export const adminOnly = (req, res, next) => {
+  if (!req.user || req.user.role !== 'admin') {
+    return res.status(403).json({
+      success: false,
+      message: 'Access denied. Admin privileges required.',
+    });
+  }
+  next();
+};

@@ -21,16 +21,16 @@
  *     node utils/createAdmin.js remove <email>
  *
  * NOTES:
- *   - Passwords are NEVER hardcoded — always pass via CLI args or env vars.
+ *   - Passwords are NEVER hardcoded — always pass via CLI args.
  *   - No public registration page is used.
- *   - Multiple admins can exist simultaneously, each with their own credentials.
+ *   - Multiple admins can exist simultaneously with their own credentials.
  *   - The last admin account cannot be demoted or removed (safety guard).
+ *   - Password hashing is handled by the User model pre-save hook (never double-hash).
  */
 
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import bcrypt from 'bcryptjs';
 import mongoose from 'mongoose';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -59,7 +59,6 @@ Examples:
   node utils/createAdmin.js create admin@houseofrcr.com MyStr0ngPass!
   node utils/createAdmin.js promote faizaan@example.com
   node utils/createAdmin.js list
-  node utils/createAdmin.js demote old-admin@example.com
 `);
   process.exit(1);
 }
@@ -107,19 +106,25 @@ try {
     const existing = await User.findOne({ email });
     if (existing) {
       if (existing.role === 'admin') {
-        console.log(`[create] "${email}" is already an admin. No changes made.`);
-      } else {
-        // Promote + update password
+        // Update password only — pre-save hook will hash it
+        existing.password = password;
         existing.role = 'admin';
-        existing.password = bcrypt.hashSync(password, 12);
         await existing.save();
-        console.log(`[create] SUCCESS: Promoted existing user "${email}" to admin and updated password.`);
+        console.log(`[create] SUCCESS: Admin "${email}" already existed — password updated.`);
+      } else {
+        // Promote customer to admin and set new password
+        // Assign plain password — pre-save hook hashes it automatically
+        existing.role = 'admin';
+        existing.password = password;
+        await existing.save();
+        console.log(`[create] SUCCESS: Promoted "${email}" to admin and updated password.`);
       }
     } else {
+      // Create brand-new admin user with plain password — pre-save hook hashes it
       await User.create({
         name: 'Admin',
         email,
-        password: bcrypt.hashSync(password, 12),
+        password,   // plain text — User model pre-save hook hashes this
         role: 'admin',
       });
       console.log(`[create] SUCCESS: Admin account created for "${email}".`);
@@ -136,6 +141,7 @@ try {
     if (user.role === 'admin') {
       console.log(`[promote] "${email}" is already an admin. No changes made.`);
     } else {
+      // Only changing role — password untouched, pre-save hook skips re-hashing
       user.role = 'admin';
       await user.save();
       console.log(`[promote] SUCCESS: "${email}" (${user.name}) is now an admin.`);
@@ -152,7 +158,6 @@ try {
     if (user.role !== 'admin') {
       console.log(`[demote] "${email}" is not an admin. No changes made.`);
     } else {
-      // Safety: do not demote the last admin
       const adminCount = await User.countDocuments({ role: 'admin' });
       if (adminCount <= 1) {
         console.error('[demote] ERROR: Cannot demote the last remaining admin account.');
@@ -173,7 +178,6 @@ try {
       process.exit(1);
     }
     if (user.role === 'admin') {
-      // Safety: do not remove the last admin
       const adminCount = await User.countDocuments({ role: 'admin' });
       if (adminCount <= 1) {
         console.error('[remove] ERROR: Cannot remove the last remaining admin account.');

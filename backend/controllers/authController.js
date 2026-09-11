@@ -1,1 +1,132 @@
-aW1wb3J0IGp3dCBmcm9tICdqc29ud2VidG9rZW4nOwppbXBvcnQgYmNyeXB0IGZyb20gJ2JjcnlwdGpzJzsKaW1wb3J0IFVzZXIgZnJvbSAnLi4vbW9kZWxzL1VzZXIuanMnOwoKY29uc3QgZ2VuZXJhdGVUb2tlbiA9IChpZCkgPT4KICBqd3Quc2lnbih7IGlkIH0sIHByb2Nlc3MuZW52LkpXVF9TRUNSRVQsIHsgZXhwaXJlc0luOiAnMzBkJyB9KTsKCmNvbnN0IHNhZmVVc2VyID0gKHVzZXIpID0+ICh7CiAgX2lkOiB1c2VyLl9pZCwKICBuYW1lOiB1c2VyLm5hbWUsCiAgZW1haWw6IHVzZXIuZW1haWwsCiAgcGhvbmU6IHVzZXIucGhvbmUgfHwgJycsCiAgYWRkcmVzczogdXNlci5hZGRyZXNzIHx8IHt9LAogIGNyZWF0ZWRBdDogdXNlci5jcmVhdGVkQXQsCn0pOwoKLy8gQGRlc2MgICAgUmVnaXN0ZXIgYSBuZXcgY3VzdG9tZXIKLy8gQHJvdXRlICAgUE9TVCAvYXBpL2F1dGgvcmVnaXN0ZXIKLy8gQGFjY2VzcyAgUHVibGljCmV4cG9ydCBjb25zdCByZWdpc3RlciA9IGFzeW5jIChyZXEsIHJlcywgbmV4dCkgPT4gewogIHRyeSB7CiAgICBjb25zdCB7IG5hbWUsIGVtYWlsLCBwYXNzd29yZCwgY29uZmlybVBhc3N3b3JkIH0gPSByZXEuYm9keTsKCiAgICBpZiAoIW5hbWUgfHwgIWVtYWlsIHx8ICFwYXNzd29yZCB8fCAhY29uZmlybVBhc3N3b3JkKSB7CiAgICAgIHJldHVybiByZXMKICAgICAgICAuc3RhdHVzKDQwMCkKICAgICAgICAuanNvbih7IHN1Y2Nlc3M6IGZhbHNlLCBtZXNzYWdlOiAnQWxsIGZpZWxkcyBhcmUgcmVxdWlyZWQuJyB9KTsKICAgIH0KICAgIGlmIChuYW1lLnRyaW0oKS5sZW5ndGggPCAyKSB7CiAgICAgIHJldHVybiByZXMuc3RhdHVzKDQwMCkuanNvbih7CiAgICAgICAgc3VjY2VzczogZmFsc2UsCiAgICAgICAgbWVzc2FnZTogJ05hbWUgbXVzdCBiZSBhdCBsZWFzdCAyIGNoYXJhY3RlcnMgbG9uZy4nLAogICAgICB9KTsKICAgIH0KICAgIGNvbnN0IGVtYWlsUmVnZXggPSAvXlteXHNAXStAW15cc0BdK1wuW15cc0BdKyQvOwogICAgaWYgKCFlbWFpbFJlZ2V4LnRlc3QoZW1haWwudHJpbSgpKSkgewogICAgICByZXR1cm4gcmVzLnN0YXR1cyg0MDApLmpzb24oewogICAgICAgIHN1Y2Nlc3M6IGZhbHNlLAogICAgICAgIG1lc3NhZ2U6ICdQbGVhc2UgcHJvdmlkZSBhIHZhbGlkIGVtYWlsIGFkZHJlc3MuJywKICAgICAgfSk7CiAgICB9CiAgICBpZiAocGFzc3dvcmQubGVuZ3RoIDwgNikgewogICAgICByZXR1cm4gcmVzLnN0YXR1cyg0MDApLmpzb24oewogICAgICAgIHN1Y2Nlc3M6IGZhbHNlLAogICAgICAgIG1lc3NhZ2U6ICdQYXNzd29yZCBtdXN0IGJlIGF0IGxlYXN0IDYgY2hhcmFjdGVycyBsb25nLicsCiAgICAgIH0pOwogICAgfQogICAgaWYgKHBhc3N3b3JkICE9PSBjb25maXJtUGFzc3dvcmQpIHsKICAgICAgcmV0dXJuIHJlcwogICAgICAgIC5zdGF0dXMoNDAwKQogICAgICAgIC5qc29uKHsgc3VjY2VzczogZmFsc2UsIG1lc3NhZ2U6ICdQYXNzd29yZHMgZG8gbm90IG1hdGNoLicgfSk7CiAgICB9CgogICAgY29uc3QgZXhpc3RpbmcgPSBhd2FpdCBVc2VyLmZpbmRPbmUoeyBlbWFpbDogZW1haWwudG9Mb3dlckNhc2UoKS50cmltKCkgfSk7CiAgICBpZiAoZXhpc3RpbmcpIHsKICAgICAgcmV0dXJuIHJlcy5zdGF0dXMoNDAwKS5qc29uKHsKICAgICAgICBzdWNjZXNzOiBmYWxzZSwKICAgICAgICBtZXNzYWdlOiAnQW4gYWNjb3VudCB3aXRoIHRoaXMgZW1haWwgYWRkcmVzcyBhbHJlYWR5IGV4aXN0cy4nLAogICAgICB9KTsKICAgIH0KCiAgICBjb25zdCBoYXNoZWRQYXNzd29yZCA9IGJjcnlwdC5oYXNoU3luYyhwYXNzd29yZCwgMTIpOwoKICAgIGNvbnN0IHVzZXIgPSBhd2FpdCBVc2VyLmNyZWF0ZSh7CiAgICAgIG5hbWU6IG5hbWUudHJpbSgpLAogICAgICBlbWFpbDogZW1haWwudG9Mb3dlckNhc2UoKS50cmltKCksCiAgICAgIHBhc3N3b3JkOiBoYXNoZWRQYXNzd29yZCwKICAgIH0pOwoKICAgIGNvbnN0IHRva2VuID0gZ2VuZXJhdGVUb2tlbih1c2VyLl9pZCk7CgogICAgcmVzLnN0YXR1cygyMDEpLmpzb24oewogICAgICBzdWNjZXNzOiB0cnVlLAogICAgICBtZXNzYWdlOiAnQWNjb3VudCBjcmVhdGVkIHN1Y2Nlc3NmdWxseS4gV2VsY29tZSB0byBIb3VzZSBvZiBSQ1IhJywKICAgICAgdG9rZW4sCiAgICAgIHVzZXI6IHNhZmVVc2VyKHVzZXIpLAogICAgfSk7CiAgfSBjYXRjaCAoZXJyb3IpIHsKICAgIG5leHQoZXJyb3IpOwogIH0KfTsKCi8vIEBkZXNjICAgIExvZ2luIGN1c3RvbWVyCi8vIEByb3V0ZSAgIFBPU1QgL2FwaS9hdXRoL2xvZ2luCi8vIEBhY2Nlc3MgIFB1YmxpYwpleHBvcnQgY29uc3QgbG9naW4gPSBhc3luYyAocmVxLCByZXMsIG5leHQpID0+IHsKICB0cnkgewogICAgY29uc3QgeyBlbWFpbCwgcGFzc3dvcmQgfSA9IHJlcS5ib2R5OwoKICAgIGlmICghZW1haWwgfHwgIXBhc3N3b3JkKSB7CiAgICAgIHJldHVybiByZXMuc3RhdHVzKDQwMCkuanNvbih7CiAgICAgICAgc3VjY2VzczogZmFsc2UsCiAgICAgICAgbWVzc2FnZTogJ0VtYWlsIGFuZCBwYXNzd29yZCBhcmUgcmVxdWlyZWQuJywKICAgICAgfSk7CiAgICB9CgogICAgY29uc3QgdXNlciA9IGF3YWl0IFVzZXIuZmluZE9uZSh7CiAgICAgIGVtYWlsOiBlbWFpbC50b0xvd2VyQ2FzZSgpLnRyaW0oKSwKICAgIH0pLnNlbGVjdCgnK3Bhc3N3b3JkJyk7CgogICAgaWYgKCF1c2VyIHx8ICEoYXdhaXQgdXNlci5jb21wYXJlUGFzc3dvcmQocGFzc3dvcmQpKSkgewogICAgICByZXR1cm4gcmVzCiAgICAgICAgLnN0YXR1cyg0MDEpCiAgICAgICAgLmpzb24oeyBzdWNjZXNzOiBmYWxzZSwgbWVzc2FnZTogJ0ludmFsaWQgZW1haWwgb3IgcGFzc3dvcmQuJyB9KTsKICAgIH0KCiAgICBjb25zdCB0b2tlbiA9IGdlbmVyYXRlVG9rZW4odXNlci5faWQpOwoKICAgIHJlcy5zdGF0dXMoMjAwKS5qc29uKHsKICAgICAgc3VjY2VzczogdHJ1ZSwKICAgICAgbWVzc2FnZTogJ0xvZ2dlZCBpbiBzdWNjZXNzZnVsbHkuJywKICAgICAgdG9rZW4sCiAgICAgIHVzZXI6IHNhZmVVc2VyKHVzZXIpLAogICAgfSk7CiAgfSBjYXRjaCAoZXJyb3IpIHsKICAgIG5leHQoZXJyb3IpOwogIH0KfTsKCi8vIEBkZXNjICAgIEdldCBjdXJyZW50IGxvZ2dlZC1pbiB1c2VyCi8vIEByb3V0ZSAgIEdFVCAvYXBpL2F1dGgvbWUKLy8gQGFjY2VzcyAgUHJpdmF0ZQpleHBvcnQgY29uc3QgZ2V0TWUgPSBhc3luYyAocmVxLCByZXMpID0+IHsKICByZXMuc3RhdHVzKDIwMCkuanNvbih7IHN1Y2Nlc3M6IHRydWUsIHVzZXI6IHNhZmVVc2VyKHJlcS51c2VyKSB9KTsKfTsKCi8vIEBkZXNjICAgIExvZ291dCAoSldUIGlzIHN0YXRlbGVzczsgY2xpZW50IHJlbW92ZXMgdGhlIHRva2VuKQovLyBAcm91dGUgICBQT1NUIC9hcGkvYXV0aC9sb2dvdXQKLy8gQGFjY2VzcyAgUHJpdmF0ZQpleHBvcnQgY29uc3QgbG9nb3V0ID0gYXN5bmMgKHJlcSwgcmVzKSA9PiB7CiAgcmVzLnN0YXR1cygyMDApLmpzb24oeyBzdWNjZXNzOiB0cnVlLCBtZXNzYWdlOiAnTG9nZ2VkIG91dCBzdWNjZXNzZnVsbHkuJyB9KTsKfTsK
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+import User from '../models/User.js';
+
+const generateToken = (id) =>
+  jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
+
+const safeUser = (user) => ({
+  _id: user._id,
+  name: user.name,
+  email: user.email,
+  phone: user.phone || '',
+  address: user.address || {},
+  createdAt: user.createdAt,
+});
+
+// @desc    Register a new customer
+// @route   POST /api/auth/register
+// @access  Public
+export const register = async (req, res, next) => {
+  try {
+    const { name, email, password, confirmPassword } = req.body;
+
+    if (!name || !email || !password || !confirmPassword) {
+      return res
+        .status(400)
+        .json({ success: false, message: 'All fields are required.' });
+    }
+    if (name.trim().length < 2) {
+      return res.status(400).json({
+        success: false,
+        message: 'Name must be at least 2 characters long.',
+      });
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide a valid email address.',
+      });
+    }
+    if (password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password must be at least 6 characters long.',
+      });
+    }
+    if (password !== confirmPassword) {
+      return res
+        .status(400)
+        .json({ success: false, message: 'Passwords do not match.' });
+    }
+
+    const existing = await User.findOne({ email: email.toLowerCase().trim() });
+    if (existing) {
+      return res.status(400).json({
+        success: false,
+        message: 'An account with this email address already exists.',
+      });
+    }
+
+    const hashedPassword = bcrypt.hashSync(password, 12);
+
+    const user = await User.create({
+      name: name.trim(),
+      email: email.toLowerCase().trim(),
+      password: hashedPassword,
+    });
+
+    const token = generateToken(user._id);
+
+    res.status(201).json({
+      success: true,
+      message: 'Account created successfully. Welcome to House of RCR!',
+      token,
+      user: safeUser(user),
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Login customer
+// @route   POST /api/auth/login
+// @access  Public
+export const login = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email and password are required.',
+      });
+    }
+
+    const user = await User.findOne({
+      email: email.toLowerCase().trim(),
+    }).select('+password');
+
+    if (!user || !(await user.comparePassword(password))) {
+      return res
+        .status(401)
+        .json({ success: false, message: 'Invalid email or password.' });
+    }
+
+    const token = generateToken(user._id);
+
+    res.status(200).json({
+      success: true,
+      message: 'Logged in successfully.',
+      token,
+      user: safeUser(user),
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Get current logged-in user
+// @route   GET /api/auth/me
+// @access  Private
+export const getMe = async (req, res) => {
+  res.status(200).json({ success: true, user: safeUser(req.user) });
+};
+
+// @desc    Logout (JWT is stateless; client removes the token)
+// @route   POST /api/auth/logout
+// @access  Private
+export const logout = async (req, res) => {
+  res.status(200).json({ success: true, message: 'Logged out successfully.' });
+};

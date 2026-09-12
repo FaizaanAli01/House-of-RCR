@@ -19,14 +19,15 @@ const AccountPage      = lazy(() => import('./pages/AccountPage'));
 const OrderDetailPage  = lazy(() => import('./pages/OrderDetailPage'));
 
 // Phase 4 admin pages (lazy-loaded — keep customer bundle lean)
-const AdminLayout      = lazy(() => import('./pages/admin/AdminLayout'));
-const AdminDashboard   = lazy(() => import('./pages/admin/AdminDashboard'));
-const AdminProducts    = lazy(() => import('./pages/admin/AdminProducts'));
-const AdminProductForm = lazy(() => import('./pages/admin/AdminProductForm'));
-const AdminOrders      = lazy(() => import('./pages/admin/AdminOrders'));
-const AdminOrderDetail = lazy(() => import('./pages/admin/AdminOrderDetail'));
-const AdminCustomers   = lazy(() => import('./pages/admin/AdminCustomers'));
-const AdminInventory   = lazy(() => import('./pages/admin/AdminInventory'));
+const AdminLayout        = lazy(() => import('./pages/admin/AdminLayout'));
+const AdminDashboard     = lazy(() => import('./pages/admin/AdminDashboard'));
+const AdminProducts      = lazy(() => import('./pages/admin/AdminProducts'));
+const AdminProductForm   = lazy(() => import('./pages/admin/AdminProductForm'));
+const AdminOrders        = lazy(() => import('./pages/admin/AdminOrders'));
+const AdminOrderDetail   = lazy(() => import('./pages/admin/AdminOrderDetail'));
+const AdminCustomers     = lazy(() => import('./pages/admin/AdminCustomers'));
+const AdminCustomerDetail = lazy(() => import('./pages/admin/AdminCustomerDetail'));
+const AdminInventory     = lazy(() => import('./pages/admin/AdminInventory'));
 
 const PageLoader = () => (
   <div className="min-h-[70vh] flex items-center justify-center">
@@ -102,6 +103,7 @@ function App() {
                   <Route path="orders"            element={<AdminOrders />} />
                   <Route path="orders/:id"        element={<AdminOrderDetail />} />
                   <Route path="customers"         element={<AdminCustomers />} />
+                  <Route path="customers/:id"     element={<AdminCustomerDetail />} />
                   <Route path="inventory"         element={<AdminInventory />} />
                 </Route>
 

@@ -9,6 +9,7 @@ import {
   User,
   LogOut,
   Package,
+  LayoutDashboard,
   Loader2,
 } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
@@ -31,7 +32,7 @@ const CATEGORIES = [
 
 const Navbar = () => {
   const { totalItemsCount } = useCart();
-  const { user, isAuthenticated, authLoading, logout } = useAuth();
+  const { user, isAuthenticated, isAdmin, authLoading, logout } = useAuth();
   const { addToast } = useToast();
   const navigate = useNavigate();
 
@@ -227,6 +228,15 @@ const Navbar = () => {
                         {user.email}
                       </p>
                     </div>
+                    {isAdmin && (
+                      <Link
+                        to="/admin/dashboard"
+                        onClick={() => setShowUserDropdown(false)}
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-semibold text-amber-700 hover:text-amber-900 hover:bg-amber-50 transition-colors"
+                      >
+                        <LayoutDashboard className="w-3.5 h-3.5" /> Admin Dashboard
+                      </Link>
+                    )}
                     <Link
                       to="/account"
                       onClick={() => setShowUserDropdown(false)}
@@ -327,6 +337,15 @@ const Navbar = () => {
             <div className="border-t border-slate-100 pt-3 mt-2">
               {isAuthenticated ? (
                 <>
+                  {isAdmin && (
+                    <Link
+                      to="/admin/dashboard"
+                      onClick={() => setMobileOpen(false)}
+                      className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-bold text-amber-700 hover:bg-amber-50 hover:text-amber-900 transition-colors"
+                    >
+                      <LayoutDashboard className="w-4 h-4" /> Admin Dashboard
+                    </Link>
+                  )}
                   <Link
                     to="/account"
                     onClick={() => setMobileOpen(false)}

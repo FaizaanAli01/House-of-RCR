@@ -5,11 +5,12 @@
  * Run from the /backend directory.
  *
  * COMMANDS:
- *   node utils/createAdmin.js create  <email> <password>   Create a new admin
- *   node utils/createAdmin.js promote <email>              Promote existing user to admin
- *   node utils/createAdmin.js demote  <email>              Demote admin to customer
- *   node utils/createAdmin.js list                         List all admin accounts
- *   node utils/createAdmin.js remove  <email>              Remove an admin account
+ *   node utils/createAdmin.js create         <email> <password>      Create a new admin
+ *   node utils/createAdmin.js reset-password <email> <new-password> Reset an existing user's password only
+ *   node utils/createAdmin.js promote        <email>                 Promote existing user to admin
+ *   node utils/createAdmin.js demote         <email>                 Demote admin to customer
+ *   node utils/createAdmin.js list                                    List all admin accounts
+ *   node utils/createAdmin.js remove         <email>                 Remove an admin account
  *
  * NOTE: The User model has NO pre-save hook for hashing.
  *       Passwords are hashed explicitly here with bcrypt before saving,
@@ -30,21 +31,23 @@ import { connectDB } from '../config/db.js';
 import User from '../models/User.js';
 
 const [, , command, emailArg, passwordArg] = process.argv;
-const COMMANDS = ['create', 'promote', 'demote', 'list', 'remove'];
+const COMMANDS = ['create', 'reset-password', 'promote', 'demote', 'list', 'remove'];
 
 if (!command || !COMMANDS.includes(command)) {
   console.log(`
 House of RCR — Admin Account Manager
 =====================================
 Usage:
-  node utils/createAdmin.js create  <email> <password>   Create a new admin
-  node utils/createAdmin.js promote <email>              Promote existing user to admin
-  node utils/createAdmin.js demote  <email>              Demote admin to customer
-  node utils/createAdmin.js list                         List all admin accounts
-  node utils/createAdmin.js remove  <email>              Remove an admin account
+  node utils/createAdmin.js create         <email> <password>      Create a new admin
+  node utils/createAdmin.js reset-password <email> <new-password> Reset an existing user's password only
+  node utils/createAdmin.js promote        <email>                 Promote existing user to admin
+  node utils/createAdmin.js demote         <email>                 Demote admin to customer
+  node utils/createAdmin.js list                                    List all admin accounts
+  node utils/createAdmin.js remove         <email>                 Remove an admin account
 
 Examples:
   node utils/createAdmin.js create admin@houseofrcr.com MyStr0ngPass!
+  node utils/createAdmin.js reset-password admin@houseofrcr.com MyNewStr0ngPass!
   node utils/createAdmin.js promote faizaan@example.com
   node utils/createAdmin.js list
 `);
@@ -103,6 +106,52 @@ try {
       await User.create({ name: 'Admin', email, password: hashedPassword, role: 'admin' });
       console.log(`[create] SUCCESS: Admin account created for "${email}".`);
     }
+  }
+
+  // ── RESET PASSWORD (password only; user and role must already exist)
+  else if (command === 'reset-password') {
+    const password = passwordArg;
+    if (!password) {
+      console.error('[reset-password] ERROR: New password is required.\n  Usage: node utils/createAdmin.js reset-password <email> <new-password>');
+      process.exit(1);
+    }
+    if (password.length < 6) {
+      console.error('[reset-password] ERROR: New password must be at least 6 characters.');
+      process.exit(1);
+    }
+
+    const existing = await User.findOne({ email }).select('_id email role');
+    if (!existing) {
+      console.error(`[reset-password] ERROR: No existing user found with email "${email}". No account was created.`);
+      process.exit(1);
+    }
+
+    const originalRole = existing.role;
+    const hashedPassword = bcrypt.hashSync(password, 12);
+
+    // Use a targeted $set so no role or profile fields can be changed.
+    const result = await User.updateOne(
+      { _id: existing._id, email: existing.email },
+      { $set: { password: hashedPassword } },
+      { runValidators: true }
+    );
+
+    if (result.matchedCount !== 1 || result.modifiedCount !== 1) {
+      console.error(`[reset-password] ERROR: Password was not updated for "${email}".`);
+      process.exit(1);
+    }
+
+    // Verify the stored hash and role without exposing either value.
+    const verified = await User.findById(existing._id).select('+password email role');
+    const passwordMatches = verified
+      ? await verified.comparePassword(password)
+      : false;
+    if (!verified || !passwordMatches || verified.role !== originalRole) {
+      console.error(`[reset-password] ERROR: Safety verification failed for "${email}".`);
+      process.exit(1);
+    }
+
+    console.log(`[reset-password] SUCCESS: Password updated for existing user "${email}". Role and all other user data were preserved.`);
   }
 
   // ── PROMOTE (role only, password unchanged)

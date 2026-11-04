@@ -173,7 +173,7 @@ const CheckoutModal = ({ isOpen, onClose }) => {
                 <div className="flex justify-between">
                   <span className="text-slate-500">Total Paid</span>
                   <span className="font-bold">
-                    \u20b9{placedOrder.total.toLocaleString('en-IN')}
+                   ₹{placedOrder.total.toLocaleString('en-IN')}
                   </span>
                 </div>
                 <div className="flex justify-between">
@@ -301,43 +301,66 @@ const CheckoutModal = ({ isOpen, onClose }) => {
                         {item.name}
                       </p>
                       <p className="text-xs text-slate-400">
-                        {item.color} \u00b7 {item.size} \u00b7 Qty {item.quantity}
+                       {item.color} · {item.size} · Qty {item.quantity}
                       </p>
                     </div>
                     <p className="font-bold text-xs text-slate-900 text-right flex-shrink-0">
-                      \u20b9{(item.price * item.quantity).toLocaleString('en-IN')}
+                    ₹{(item.price * item.quantity).toLocaleString('en-IN')}
                     </p>
                   </div>
                 ))}
               </div>
 
+              
+
               {/* Totals */}
-              <div className="bg-slate-50 rounded-2xl p-4 space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-slate-500">Subtotal</span>
-                  <span>\u20b9{subtotal.toLocaleString('en-IN')}</span>
-                </div>
-                {discountAmount > 0 && (
-                  <div className="flex justify-between text-emerald-700">
-                    <span>Discount</span>
-                    <span>-\u20b9{discountAmount.toLocaleString('en-IN')}</span>
-                  </div>
-                )}
-                <div className="flex justify-between">
-                  <span className="text-slate-500">Shipping</span>
-                  <span>
-                    {shippingFee === 0 ? 'Free' : `\u20b9${shippingFee}`}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-500">GST (5%)</span>
-                  <span>\u20b9{taxAmount.toLocaleString('en-IN')}</span>
-                </div>
-                <div className="flex justify-between font-bold text-base border-t border-slate-200 pt-2 mt-1">
-                  <span>Total</span>
-                  <span>\u20b9{grandTotal.toLocaleString('en-IN')}</span>
-                </div>
-              </div>
+<div className="bg-slate-50 rounded-2xl p-4 space-y-2 text-sm">
+
+  {/* Subtotal */}
+  <div className="flex justify-between">
+    <span className="text-slate-500">Subtotal</span>
+    <span>
+      ₹{subtotal.toLocaleString('en-IN')}
+    </span>
+  </div>
+
+  {/* Discount */}
+  {discountAmount > 0 && (
+    <div className="flex justify-between text-emerald-700">
+      <span>Discount</span>
+      <span>
+        -₹{discountAmount.toLocaleString('en-IN')}
+      </span>
+    </div>
+  )}
+
+  {/* Shipping */}
+  <div className="flex justify-between">
+    <span className="text-slate-500">Shipping</span>
+    <span>
+      {shippingFee === 0
+        ? 'Free'
+        : `₹${shippingFee.toLocaleString('en-IN')}`}
+    </span>
+  </div>
+
+  {/* GST */}
+  <div className="flex justify-between">
+    <span className="text-slate-500">GST (5%)</span>
+    <span>
+      ₹{taxAmount.toLocaleString('en-IN')}
+    </span>
+  </div>
+
+  {/* Grand Total */}
+  <div className="flex justify-between font-bold text-base border-t border-slate-200 pt-2 mt-1">
+    <span>Total</span>
+    <span>
+      ₹{grandTotal.toLocaleString('en-IN')}
+    </span>
+  </div>
+
+</div>
 
               <p className="text-xs text-slate-400 text-center">
                 Prices are verified on the server. No payment required for now.
